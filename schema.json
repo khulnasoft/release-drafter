@@ -12,7 +12,7 @@
       }
     },
     "change-template": {
-      "default": "* $TITLE (#$NUMBER) @$AUTHOR",
+      "default": "'* $TITLE (#$NUMBER) @$AUTHOR'",
       "type": "string"
     },
     "change-title-escapes": {
@@ -28,14 +28,26 @@
       ]
     },
     "no-changes-template": {
-      "default": "* No changes",
+      "default": "'* No changes'",
       "type": "string"
     },
     "version-template": {
-      "default": "$MAJOR.$MINOR.$PATCH",
+      "default": "$MAJOR.$MINOR.$PATCH$PRERELEASE",
       "type": "string"
     },
     "name-template": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [""]
+        },
+        {
+          "default": "",
+          "type": "string"
+        }
+      ]
+    },
+    "tag-prefix": {
       "anyOf": [
         {
           "type": "string",
@@ -73,6 +85,24 @@
         "type": "string"
       }
     },
+    "include-paths": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "exclude-contributors": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "no-contributors-template": {
+      "default": "No contributors",
+      "type": "string"
+    },
     "sort-by": {
       "default": "merged_at",
       "enum": ["merged_at", "title"],
@@ -86,6 +116,50 @@
     "prerelease": {
       "default": false,
       "type": "boolean"
+    },
+    "latest": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": ["", "true", "false", "legacy"]
+        },
+        {
+          "default": "true",
+          "type": "string"
+        }
+      ]
+    },
+    "filter-by-commitish": {
+      "default": false,
+      "type": "boolean"
+    },
+    "include-pre-releases": {
+      "default": false,
+      "type": "boolean"
+    },
+    "prerelease-identifier": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [""]
+        },
+        {
+          "default": "",
+          "type": "string"
+        }
+      ]
+    },
+    "commitish": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [""]
+        },
+        {
+          "default": "",
+          "type": "string"
+        }
+      ]
     },
     "replacers": {
       "default": [],
@@ -113,6 +187,49 @@
         "required": ["search", "replace"]
       }
     },
+    "autolabeler": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "files": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "branch": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "title": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "body": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "patterns": [],
+        "required": ["label"]
+      }
+    },
     "categories": {
       "default": [],
       "type": "array",
@@ -121,6 +238,11 @@
         "properties": {
           "title": {
             "type": "string"
+          },
+          "collapse-after": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0
           },
           "label": {
             "type": "string"
@@ -157,6 +279,7 @@
           "type": "object",
           "properties": {
             "labels": {
+              "default": [],
               "type": "array",
               "items": {
                 "type": "string"
@@ -170,6 +293,7 @@
           "type": "object",
           "properties": {
             "labels": {
+              "default": [],
               "type": "array",
               "items": {
                 "type": "string"
@@ -183,6 +307,7 @@
           "type": "object",
           "properties": {
             "labels": {
+              "default": [],
               "type": "array",
               "items": {
                 "type": "string"
@@ -201,8 +326,44 @@
       "additionalProperties": false,
       "patterns": []
     },
+    "category-template": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [""]
+        },
+        {
+          "default": "## $TITLE",
+          "type": "string"
+        }
+      ]
+    },
+    "header": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [""]
+        },
+        {
+          "default": "",
+          "type": "string"
+        }
+      ]
+    },
     "template": {
       "type": "string"
+    },
+    "footer": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [""]
+        },
+        {
+          "default": "",
+          "type": "string"
+        }
+      ]
     },
     "_extends": {
       "type": "string"
